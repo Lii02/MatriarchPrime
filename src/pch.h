@@ -40,7 +40,6 @@ typedef unsigned int ghandle_t;
 #include <SDL3/SDL.h>
 #include <glad/gl.h>
 #include <AL/al.h>
-#include <cglm/struct.h>
 #include <tinyxml2.h>
 
 typedef std::vector<bool> liBoolBuffer;
