@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 4.0)
-project(LiGameStarter)
+project(MatriarchPrime)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
@@ -16,27 +16,26 @@ add_subdirectory(LiDependencies)
 file(GLOB_RECURSE SRCS src/*.cpp src/*.c)
 file(GLOB_RECURSE HDRS src/*.h)
 
-add_executable(LiGameStarter)
-target_sources(LiGameStarter PUBLIC ${SRCS} ${HDRS})
+add_executable(MatriarchPrime)
+target_sources(MatriarchPrime PUBLIC ${SRCS} ${HDRS})
 
 if(WIN32)
-    add_custom_command(TARGET LiGameStarter POST_BUILD
+    add_custom_command(TARGET MatriarchPrime POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${PROJECT_SOURCE_DIR}/LiDependencies/Bin/SDL3.dll
-        $<TARGET_FILE_DIR:LiGameStarter>)
+        $<TARGET_FILE_DIR:MatriarchPrime>)
 
-    add_custom_command(TARGET LiGameStarter POST_BUILD
+    add_custom_command(TARGET MatriarchPrime POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${PROJECT_SOURCE_DIR}/LiDependencies/Bin/OpenAL32.dll
-        $<TARGET_FILE_DIR:LiGameStarter>)
+        $<TARGET_FILE_DIR:MatriarchPrime>)
 
-    target_link_libraries(LiGameStarter opengl32)
-    target_link_options(LiGameStarter PRIVATE "$<$<CONFIG:Release>:/SUBSYSTEM:WINDOWS>" "$<$<CONFIG:Debug>:/SUBSYSTEM:CONSOLE>")
+    target_link_libraries(MatriarchPrime opengl32)
+    target_link_options(MatriarchPrime PRIVATE "$<$<CONFIG:Release>:/SUBSYSTEM:WINDOWS>" "$<$<CONFIG:Debug>:/SUBSYSTEM:CONSOLE>")
 endif()
 
-target_precompile_headers(LiGameStarter PUBLIC src/pch.h)
-target_link_libraries(LiGameStarter LiDependencies SDL3 OpenAL32)
-target_include_directories(LiGameStarter PUBLIC ${PROJECT_SOURCE_DIR}/src)
-target_include_directories(LiGameStarter PUBLIC ${PROJECT_SOURCE_DIR}/LiDependencies/Include)
-target_link_directories(LiGameStarter PUBLIC ${PROJECT_SOURCE_DIR}/LiDependencies/Lib)
-set_property(TARGET LiGameStarter PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+target_precompile_headers(MatriarchPrime PUBLIC src/pch.h)
+target_link_libraries(MatriarchPrime LiDependencies SDL3 OpenAL32)
+target_include_directories(MatriarchPrime PUBLIC ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/LiDependencies/Include)
+target_link_directories(MatriarchPrime PUBLIC ${PROJECT_SOURCE_DIR}/LiDependencies/Lib)
+set_property(TARGET MatriarchPrime PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
