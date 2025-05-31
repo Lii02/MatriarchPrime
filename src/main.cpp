@@ -26,7 +26,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
 }
 
 SDL_AppResult SDL_AppIterate(void* appstate) {
-    glClear(GL_CLEAR_BUFFER | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Render/Update code here
     SDL_GL_SwapWindow(rt.window);
     return SDL_APP_CONTINUE;
