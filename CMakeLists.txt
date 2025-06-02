@@ -30,12 +30,11 @@ if(WIN32)
         ${PROJECT_SOURCE_DIR}/LiDependencies/Bin/OpenAL32.dll
         $<TARGET_FILE_DIR:MatriarchPrime>)
 
-    target_link_libraries(MatriarchPrime opengl32)
     target_link_options(MatriarchPrime PRIVATE "$<$<CONFIG:Release>:/SUBSYSTEM:WINDOWS>" "$<$<CONFIG:Debug>:/SUBSYSTEM:CONSOLE>")
 endif()
 
 target_precompile_headers(MatriarchPrime PUBLIC src/pch.h)
-target_link_libraries(MatriarchPrime LiDependencies SDL3 OpenAL32)
+target_link_libraries(MatriarchPrime LiDependencies SDL3 OpenAL32 shaderc_shared)
 target_include_directories(MatriarchPrime PUBLIC ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/LiDependencies/Include)
 target_link_directories(MatriarchPrime PUBLIC ${PROJECT_SOURCE_DIR}/LiDependencies/Lib)
 set_property(TARGET MatriarchPrime PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")

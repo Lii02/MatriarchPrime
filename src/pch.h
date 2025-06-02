@@ -38,9 +38,10 @@ typedef unsigned int ghandle_t;
 
 // External libraries
 #include <SDL3/SDL.h>
-#include <glad/gl.h>
 #include <AL/al.h>
 #include <tinyxml2.h>
+#include <cglm/struct.h>
+#include <shaderc/shaderc.h>
 
 typedef std::vector<bool> liBoolBuffer;
 typedef std::vector<int> liIntBuffer;
