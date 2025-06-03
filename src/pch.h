@@ -2,7 +2,6 @@
 #define PCH_H
 #pragma once
 
-#define LI_DELETE_INSTANCE(class) (delete class::Instance());
 #define LI_ARRAYSIZE(arr) (sizeof(arr) / sizeof(*arr))
 #define LI_STRINGIFY(x) #x
 #define LI_BIT(x) (1 << x)
