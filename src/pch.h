@@ -31,6 +31,7 @@ typedef unsigned int ghandle_t;
 #include <chrono>
 #include <algorithm>
 #include <functional>
+#include <fstream>
 #include <assert.h>
 #include <string.h>
 #include <math.h>
@@ -40,7 +41,7 @@ typedef unsigned int ghandle_t;
 #include <AL/al.h>
 #include <tinyxml2.h>
 #include <cglm/struct.h>
-#include <shaderc/shaderc.h>
+#include <glad/gl.h>
 
 typedef std::vector<bool> liBoolBuffer;
 typedef std::vector<int> liIntBuffer;

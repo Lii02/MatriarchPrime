@@ -26,4 +26,6 @@ private:
     vec4s vec;
 };
 
+typedef liVec4 liColor;
+
 #endif
