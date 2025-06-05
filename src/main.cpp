@@ -14,7 +14,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
     rt.width = 1280;
     rt.height = 800;
     rt.window = SDL_CreateWindow("Matriarch Prime", rt.width, rt.height, SDL_WINDOW_VULKAN);
-
+    SDL_AddGamepadMappingsFromFile("./Assets/gamecontrollerdb.txt");
     return SDL_APP_CONTINUE;
 }
 
