@@ -1,6 +1,7 @@
 #define SDL_MAIN_USE_CALLBACKS
 #include <SDL3/SDL_main.h>
 #include "pch.h"
+#include <Engine/Framework/Stopwatch.h>
 #include <Engine/Input/Keyboard.h>
 #include <Engine/Input/Mouse.h>
 #include <Engine/Graphics/RenderPass.h>
@@ -25,11 +26,13 @@ static struct runtime_t {
     SDL_Window* window;
     SDL_GLContext gl;
     int width, height;
+    liStopwatch stopwatch;
+    float elapsed;
     liKeyboard* keyboard;
     liMouse* mouse;
+    
     liRenderPass* renderPass;
     liPostProcessing* post;
-
     liMesh* mesh;
     liRenderShader* renderShader;
     liShaderProgram* program;
@@ -59,6 +62,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
     rt.height = 800;
     rt.window = SDL_CreateWindow("Matriarch Prime", rt.width, rt.height, SDL_WINDOW_OPENGL);
     SDL_AddGamepadMappingsFromFile("./Assets/gamecontrollerdb.txt");
+    rt.elapsed = 0.0f;
     rt.keyboard = new liKeyboard();
     rt.mouse = new liMouse();
 
@@ -93,6 +97,9 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
 }
 
 SDL_AppResult SDL_AppIterate(void* appstate) {
+    rt.stopwatch.Begin();
+    double deltaTime = rt.stopwatch.Seconds();
+    rt.elapsed += rt.stopwatch.Seconds();
     rt.renderPass->Begin(liColor(0.5f, 0.25f, 0.25f, 1.0f));
     
     rt.program->Bind();
@@ -108,6 +115,7 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
     rt.post->Process(rt.renderPass);
 
     SDL_GL_SwapWindow(rt.window);
+    rt.stopwatch.End();
     return SDL_APP_CONTINUE;
 }
 
