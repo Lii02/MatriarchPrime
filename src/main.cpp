@@ -75,8 +75,9 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
     rt.renderPass = new liRenderPass(rt.width, rt.height, true);
     rt.post = new liPostProcessing();
 
-    rt.mesh = new liMesh();
-    rt.mesh->Upload(&vertices, &indices);
+    rt.mesh = new liMesh(vertices.size(), indices.size());
+    rt.mesh->UploadVertices(&vertices);
+    rt.mesh->UploadIndices(&indices);
     
     rt.renderShader = new liRenderShader();
     std::string vertexSource, pixelSource;
