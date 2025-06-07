@@ -4,7 +4,7 @@
 bool liFileIO::Read(std::string path, std::string& output) {
     std::ifstream stream;
     stream.open(path, std::ios::in | std::ios::binary);
-    if(stream.is_open()) {
+    if(!stream.is_open()) {
         return false;
     }
     stream.seekg(0, std::ios::end);

@@ -1,8 +1,22 @@
 #define SDL_MAIN_USE_CALLBACKS
 #include <SDL3/SDL_main.h>
 #include "pch.h"
+#include <Engine/Math/Matrices.h>
 #include <Engine/Graphics/RenderPass.h>
 #include <Engine/Graphics/Mesh.h>
+#include <Engine/Graphics/RenderShader.h>
+#include <Engine/Graphics/ShaderProgram.h>
+#include <Engine/Tools/FileIO.h>
+
+struct VertexBuffer {
+    liMat4 projection;
+    liMat4 view;
+    liMat4 model;
+};
+
+struct PixelBuffer {
+    liColor color;
+};
 
 static struct runtime_t {
     SDL_Window* window;
@@ -11,17 +25,25 @@ static struct runtime_t {
     liRenderPass* renderPass;
 
     liMesh* mesh;
+    liRenderShader* renderShader;
+    liShaderProgram* program;
+    liUniformBuffer<VertexBuffer>* vertexBuffer;
+    liUniformBuffer<PixelBuffer>* pixelBuffer;
 } rt;
 
 liVertexList vertices = {
     liVertex(liVec3(-0.5f, -0.5f, 0.0f), liVec2(), liVec3()),
     liVertex(liVec3(0.5f, -0.5f, 0.0f), liVec2(), liVec3()),
-    liVertex(liVec3(0.0f,  0.5f, 0.0f), liVec2(), liVec3())
+    liVertex(liVec3(-0.5f,  0.5f, 0.0f), liVec2(), liVec3()),
+    liVertex(liVec3(0.5f,  0.5f, 0.0f), liVec2(), liVec3())
 };
 
 liUIntBuffer indices = {
-    0, 1, 2
+    0, 1, 2, 1, 2, 3
 };
+
+VertexBuffer vertexBuffer;
+PixelBuffer pixelBuffer;
 
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
     *appstate = static_cast<void*>(&rt);
@@ -42,6 +64,21 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
 
     rt.mesh = new liMesh();
     rt.mesh->Upload(&vertices, &indices);
+    
+    rt.renderShader = new liRenderShader();
+    std::string vertexSource, pixelSource;
+    liFileIO::Read("./Assets/Shaders/test.vert", vertexSource);
+    liFileIO::Read("./Assets/Shaders/test.frag", pixelSource);
+    rt.renderShader->CompileVertex(vertexSource);
+    rt.renderShader->CompilePixel(pixelSource);
+    
+    rt.program = new liShaderProgram();
+    rt.renderShader->Attach(rt.program);
+    rt.program->Link({ { 0, "position" }, { 1, "texCoord" }, { 2, "normal" } });
+
+    rt.vertexBuffer = new liUniformBuffer<VertexBuffer>();
+    rt.pixelBuffer = new liUniformBuffer<PixelBuffer>();
+    pixelBuffer.color = liColor(0.5f, 1.0f, 0.25f, 1.0f);
 
     return SDL_APP_CONTINUE;
 }
@@ -49,6 +86,11 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
 SDL_AppResult SDL_AppIterate(void* appstate) {
     //rt.renderPass->Begin(liColor(0.5f, 0.25f, 0.25f, 1.0f));
     
+    rt.program->Bind();
+    rt.vertexBuffer->Bind(rt.program->Program(), "VertexUniform", 0);
+    rt.pixelBuffer->Bind(rt.program->Program(), "PixelUniform", 1);
+    rt.vertexBuffer->Upload(&vertexBuffer);
+    rt.pixelBuffer->Upload(&pixelBuffer);
     rt.mesh->Draw();
 
     //rt.renderPass->End();
@@ -67,6 +109,10 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event) {
 }
 
 void SDL_AppQuit(void* appstate, SDL_AppResult result) {
+    delete rt.pixelBuffer;
+    delete rt.vertexBuffer;
+    delete rt.renderShader;
+    delete rt.program;
     delete rt.mesh;
     SDL_GL_DestroyContext(rt.gl);
     SDL_DestroyWindow(rt.window);
