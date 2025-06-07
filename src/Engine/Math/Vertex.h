@@ -3,7 +3,10 @@
 #pragma once
 #include "Vectors.h"
 
+class liMesh;
+
 class liVertex {
+    friend class liMesh;
 public:
     liVertex(liVec3 position, liVec2 texCoord, liVec3 normal);
     liVertex();

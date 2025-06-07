@@ -41,8 +41,7 @@ typedef unsigned int ghandle_t;
 #include <AL/al.h>
 #include <tinyxml2.h>
 #include <cglm/struct.h>
-#define VOLK_IMPLEMENTATION
-#include <Volk/volk.h>
+#include <glad/gl.h>
 
 typedef std::vector<bool> liBoolBuffer;
 typedef std::vector<int> liIntBuffer;
