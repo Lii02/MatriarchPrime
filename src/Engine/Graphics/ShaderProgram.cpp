@@ -15,6 +15,10 @@ bool liShaderProgram::Link(std::unordered_map<int, std::string> attribs) {
     int status;
     glGetProgramiv(program, GL_LINK_STATUS, &status);
     if(!status) {
+        int length = 0;
+        char message[1024];
+        glGetProgramInfoLog(program, 1024, &length, message);
+        std::cerr << "Shader program link error: " << message;
         return false;
     }
     for(ulong_t i = 0; i < attribs.size(); i++) {
@@ -25,4 +29,9 @@ bool liShaderProgram::Link(std::unordered_map<int, std::string> attribs) {
 
 void liShaderProgram::Bind() const {
     glUseProgram(program);
+}
+
+void liShaderProgram::LoadTexture(std::string name, ghandle_t handle) {
+    int index = glGetUniformLocation(program, name.c_str());
+    glUniform1i(index, handle);
 }

@@ -1,8 +1,9 @@
 #define SDL_MAIN_USE_CALLBACKS
 #include <SDL3/SDL_main.h>
 #include "pch.h"
-#include <Engine/Math/Matrices.h>
 #include <Engine/Graphics/RenderPass.h>
+#include <Engine/Graphics/PostProcessing.h>
+#include <Engine/Math/Matrices.h>
 #include <Engine/Graphics/Mesh.h>
 #include <Engine/Graphics/RenderShader.h>
 #include <Engine/Graphics/ShaderProgram.h>
@@ -23,6 +24,7 @@ static struct runtime_t {
     SDL_GLContext gl;
     int width, height;
     liRenderPass* renderPass;
+    liPostProcessing* post;
 
     liMesh* mesh;
     liRenderShader* renderShader;
@@ -61,6 +63,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
     SDL_GL_MakeCurrent(rt.window, rt.gl);
     gladLoadGLES2((GLADloadfunc)SDL_GL_GetProcAddress);
     rt.renderPass = new liRenderPass(rt.width, rt.height, true);
+    rt.post = new liPostProcessing();
 
     rt.mesh = new liMesh();
     rt.mesh->Upload(&vertices, &indices);
@@ -84,7 +87,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
 }
 
 SDL_AppResult SDL_AppIterate(void* appstate) {
-    //rt.renderPass->Begin(liColor(0.5f, 0.25f, 0.25f, 1.0f));
+    rt.renderPass->Begin(liColor(0.5f, 0.25f, 0.25f, 1.0f));
     
     rt.program->Bind();
     rt.vertexBuffer->Bind(rt.program->Program(), "VertexUniform", 0);
@@ -93,7 +96,10 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
     rt.pixelBuffer->Upload(&pixelBuffer);
     rt.mesh->Draw();
 
-    //rt.renderPass->End();
+    rt.renderPass->End();
+
+    glClear(GL_COLOR_BUFFER_BIT);
+    rt.post->Process(rt.renderPass);
 
     SDL_GL_SwapWindow(rt.window);
     return SDL_APP_CONTINUE;
@@ -114,6 +120,9 @@ void SDL_AppQuit(void* appstate, SDL_AppResult result) {
     delete rt.renderShader;
     delete rt.program;
     delete rt.mesh;
+    
+    delete rt.post;
+    delete rt.renderPass;
     SDL_GL_DestroyContext(rt.gl);
     SDL_DestroyWindow(rt.window);
 }

@@ -39,6 +39,7 @@ void liRenderPass::Begin(liColor clearColor) {
     glViewport(0, 0, width, height);
     glClearColor(clearColor.X(), clearColor.Y(), clearColor.Z(), clearColor.W());
     glClear(GL_COLOR_BUFFER_BIT | (useDepth ? GL_DEPTH_BUFFER_BIT : 0));
+    glEnable(GL_DEPTH_TEST);
 }
 
 void liRenderPass::End() {

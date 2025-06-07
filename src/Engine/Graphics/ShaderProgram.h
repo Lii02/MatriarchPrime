@@ -14,6 +14,7 @@ public:
 
     bool Link(std::unordered_map<int, std::string> attribs);
     void Bind() const;
+    void LoadTexture(std::string name, ghandle_t handle);
     
     ghandle_t Program() const { return program; }
     liRenderShader* RenderShader() { return renderShader; }
