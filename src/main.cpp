@@ -91,6 +91,9 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
     rt.program->Link({ { 0, "position" }, { 1, "texCoord" }, { 2, "normal" } });
 
     rt.vertexBuffer = new liUniformBuffer<VertexBuffer>();
+    vertexBuffer.model = liMat4::Translate(liVec3(0, 0, -1));
+    vertexBuffer.projection = liMat4::Perspective(70.0f, 1.6f, 0.1f, 1000.0f);
+
     rt.pixelBuffer = new liUniformBuffer<PixelBuffer>();
     pixelBuffer.color = liColor(0.5f, 1.0f, 0.25f, 1.0f);
 

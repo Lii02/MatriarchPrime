@@ -32,6 +32,10 @@ typedef unsigned int ghandle_t;
 #include <algorithm>
 #include <functional>
 #include <fstream>
+#include <limits>
+#include <bitset>
+#include <map>
+#include <array>
 #include <assert.h>
 #include <string.h>
 #include <math.h>
