@@ -6,7 +6,7 @@
 
 class liMeshRenderer : public liActorComponent {
 public:
-    liMeshRenderer(liMesh* mesh, topology_t topology = topology_t::TRIANGLES, ulong_t start = 0, ulong_t count = -1);
+    liMeshRenderer(liMesh* mesh, cullMode_t cull = cullMode_t::BACK_FACE, topology_t topology = topology_t::TRIANGLES, ulong_t start = 0, ulong_t count = -1);
     ~liMeshRenderer();
 
     virtual void Render() override;
@@ -17,6 +17,7 @@ public:
 private:
     liMesh* mesh;
     topology_t topology;
+    cullMode_t cull;
     ulong_t start, count;
 };
 

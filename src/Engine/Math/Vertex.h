@@ -12,13 +12,13 @@ public:
     liVertex();
 
     void SetPosition(liVec3 position);
-    liVec3 Position() const { return position; }
+    inline liVec3 Position() const { return position; }
     
     void SetTexCoord(liVec2 texCoord);
-    liVec2 TexCoord() const { return texCoord; }
+    inline liVec2 TexCoord() const { return texCoord; }
 
     void SetNormal(liVec3 normal);
-    liVec3 Normal() const { return normal; }
+    inline liVec3 Normal() const { return normal; }
 private:
     liVec3 position;
     liVec2 texCoord;

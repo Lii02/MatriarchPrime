@@ -4,13 +4,13 @@
 liActor::liActor(std::string name) {
     this->name = name;
 
-    for(ulong_t i = 0; i < actorComponentType_t::COMPONENT_COUNT; i++) {
+    for(ulong_t i = 0; i < actorComponentType_t::COUNT; i++) {
         components[i] = nullptr;
     }
 }
 
 liActor::~liActor() {
-    for(ulong_t i = 0; i < actorComponentType_t::COMPONENT_COUNT; i++) {
+    for(ulong_t i = 0; i < actorComponentType_t::COUNT; i++) {
         if(components[i] != nullptr) {
             delete components[i];
         }
@@ -18,7 +18,7 @@ liActor::~liActor() {
 }
 
 void liActor::Render() {
-    for(ulong_t i = 0; i < actorComponentType_t::COMPONENT_COUNT; i++) {
+    for(ulong_t i = 0; i < actorComponentType_t::COUNT; i++) {
         if(components[i] != nullptr) {
             components[i]->Render();
         }
@@ -26,7 +26,7 @@ void liActor::Render() {
 }
 
 void liActor::Update(float deltaTime) {
-    for(ulong_t i = 0; i < actorComponentType_t::COMPONENT_COUNT; i++) {
+    for(ulong_t i = 0; i < actorComponentType_t::COUNT; i++) {
         if(components[i] != nullptr) {
             components[i]->Update(deltaTime);
         }
@@ -42,7 +42,7 @@ void liActor::AddComponent(liActorComponent* compoment) {
 }
 
 void liActor::RemoveComponent(actorComponentType_t type) {
-    assert(type < actorComponentType_t::COMPONENT_COUNT);
+    assert(type < actorComponentType_t::COUNT);
     liActorComponent* dest = components[type];
     if(dest != nullptr) {
         delete dest;

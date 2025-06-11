@@ -1,10 +1,11 @@
 #ifndef RENDERSHADER_H
 #define RENDERSHADER_H
 #pragma once
+#include "Engine/Framework/Asset.h"
 
 class liShaderProgram;
 
-class liRenderShader {
+class liRenderShader : public liAsset {
     friend class liShaderProgram;
 public:
     liRenderShader();

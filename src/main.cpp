@@ -11,6 +11,7 @@
 #include <Engine/Graphics/RenderShader.h>
 #include <Engine/Graphics/ShaderProgram.h>
 #include <Engine/Tools/FileIO.h>
+#include <Engine/Framework/AssetManager.h>
 
 struct VertexBuffer {
     liMat4 projection;
@@ -33,6 +34,7 @@ static struct runtime_t {
     
     liRenderPass* renderPass;
     liPostProcessing* post;
+    liAssetManager* asset;
     liMesh* mesh;
     liRenderShader* renderShader;
     liShaderProgram* program;
@@ -41,10 +43,10 @@ static struct runtime_t {
 } rt;
 
 liVertexList vertices = {
-    liVertex(liVec3(-0.5f, -0.5f, 0.0f), liVec2(), liVec3()),
-    liVertex(liVec3(0.5f, -0.5f, 0.0f), liVec2(), liVec3()),
-    liVertex(liVec3(-0.5f,  0.5f, 0.0f), liVec2(), liVec3()),
-    liVertex(liVec3(0.5f,  0.5f, 0.0f), liVec2(), liVec3())
+    liVertex(liVec3(-0.5f, -0.5f, 0.0f), liVec2(0.0f, 0.0f), liVec3()),
+    liVertex(liVec3(0.5f, -0.5f, 0.0f), liVec2(1.0f, 0.0f), liVec3()),
+    liVertex(liVec3(-0.5f, 0.5f, 0.0f), liVec2(0.0f, 1.0f), liVec3()),
+    liVertex(liVec3(0.5f, 0.5f, 0.0f), liVec2(1.0f, 1.0f), liVec3())
 };
 
 liUIntBuffer indices = {
@@ -74,18 +76,21 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
     gladLoadGLES2((GLADloadfunc)SDL_GL_GetProcAddress);
     rt.renderPass = new liRenderPass(rt.width, rt.height, true);
     rt.post = new liPostProcessing();
+    rt.asset = new liAssetManager();
 
     rt.mesh = new liMesh(vertices.size(), indices.size());
     rt.mesh->UploadVertices(&vertices);
     rt.mesh->UploadIndices(&indices);
+    rt.asset->LoadAsset("TestMesh", rt.mesh);
     
     rt.renderShader = new liRenderShader();
     std::string vertexSource, pixelSource;
-    liFileIO::Read("./Assets/Shaders/test.vert", vertexSource);
-    liFileIO::Read("./Assets/Shaders/test.frag", pixelSource);
+    liFileIO::Read("./Assets/Shaders/standard.vert", vertexSource);
+    liFileIO::Read("./Assets/Shaders/standard.frag", pixelSource);
     rt.renderShader->CompileVertex(vertexSource);
     rt.renderShader->CompilePixel(pixelSource);
-    
+    rt.asset->LoadAsset("TestShader", rt.renderShader);
+
     rt.program = new liShaderProgram();
     rt.renderShader->Attach(rt.program);
     rt.program->Link({ { 0, "position" }, { 1, "texCoord" }, { 2, "normal" } });
@@ -111,7 +116,7 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
     rt.pixelBuffer->Bind(rt.program->Program(), "PixelUniform", 1);
     rt.vertexBuffer->Upload(&vertexBuffer);
     rt.pixelBuffer->Upload(&pixelBuffer);
-    rt.mesh->Draw();
+    rt.mesh->Draw(cullMode_t::BACK_FACE, topology_t::TRIANGLES, 0, -1);
 
     rt.renderPass->End();
 
@@ -147,10 +152,9 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event) {
 void SDL_AppQuit(void* appstate, SDL_AppResult result) {
     delete rt.pixelBuffer;
     delete rt.vertexBuffer;
-    delete rt.renderShader;
     delete rt.program;
-    delete rt.mesh;
     
+    delete rt.asset;
     delete rt.post;
     delete rt.renderPass;
     delete rt.mouse;

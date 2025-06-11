@@ -53,4 +53,12 @@ typedef std::vector<uint_t> liUIntBuffer;
 typedef std::vector<float32_t> liFloatBuffer;
 typedef std::vector<byte_t> liCharBuffer;
 
+#define LI_GUID_LENGTH 0x10
+union guid_t {
+    struct {
+        byte_t id[LI_GUID_LENGTH];
+        ubyte_t null;
+    };
+};
+
 #endif

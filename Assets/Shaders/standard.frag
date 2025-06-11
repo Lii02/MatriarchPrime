@@ -12,5 +12,5 @@ layout (std140, binding = 1) uniform PixelUniform {
 };
 
 void main() {
-    outColor = color;
+    outColor = color * vec4(vsIn.texCoords, 0, 1);
 }

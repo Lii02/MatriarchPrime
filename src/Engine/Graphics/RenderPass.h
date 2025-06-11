@@ -12,8 +12,8 @@ public:
     void Begin(liColor clearColor = liColor(0.0f));
     void End();
 
-    ghandle_t GetTexture() const { return colorTexture; }
-    ghandle_t GetFramebuffer() const { return framebuffer; }
+    inline ghandle_t GetTexture() const { return colorTexture; }
+    inline ghandle_t GetFramebuffer() const { return framebuffer; }
 private:
     liColor clearColor;
     ghandle_t framebuffer = 0;

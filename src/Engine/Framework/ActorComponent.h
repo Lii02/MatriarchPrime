@@ -5,8 +5,8 @@
 class liActor;
 
 enum actorComponentType_t {
-    COMPONENT_MESHRENDERER,
-    COMPONENT_COUNT
+    MESHRENDERER,
+    COUNT
 };
 
 class liActorComponent {
@@ -18,7 +18,7 @@ public:
     virtual void Render() = 0;
     virtual void Update(float deltaTime) = 0;
 
-    liActor* Owner() { return owner; }
+    inline liActor* Owner() { return owner; }
 protected:
     liActor* owner;
     actorComponentType_t type;

@@ -16,8 +16,8 @@ public:
     void Bind() const;
     void LoadTexture(std::string name, ghandle_t handle);
     
-    ghandle_t Program() const { return program; }
-    liRenderShader* RenderShader() { return renderShader; }
+    inline ghandle_t Program() const { return program; }
+    inline liRenderShader* RenderShader() { return renderShader; }
 private:
     ghandle_t program;
     liRenderShader* renderShader;

@@ -19,7 +19,7 @@ public:
     std::string name;
     liTransform transform;
 private:
-    std::array<liActorComponent*, actorComponentType_t::COMPONENT_COUNT> components;
+    std::array<liActorComponent*, actorComponentType_t::COUNT> components;
 };
 
 #endif

@@ -45,15 +45,16 @@ void liMesh::UploadIndices(liUIntBuffer* indices) {
     glBindVertexArray(0);
 }
 
-void liMesh::Draw(topology_t topology, ulong_t start, long_t count) {
+void liMesh::Draw(cullMode_t cull, topology_t topology, ulong_t start, long_t count) {
     ulong_t c = count;
     if(count < 0) {
         c = drawCount;
     }
+    glCullFace((GLenum)cull);
     glBindVertexArray(vao);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
-    glDrawElements((uint_t)topology, drawCount, GL_UNSIGNED_INT, (void*)(start * sizeof(uint_t)));
+    glDrawElements((GLenum)topology, drawCount, GL_UNSIGNED_INT, (void*)(start * sizeof(uint_t)));
     glBindVertexArray(0);
 }

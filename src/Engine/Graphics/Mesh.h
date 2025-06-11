@@ -2,6 +2,7 @@
 #define MESH_H
 #pragma once
 #include "Engine/Math/Vertex.h"
+#include "Engine/Framework/Asset.h"
 
 enum class topology_t {
     POINTS = 0x0,
@@ -9,7 +10,13 @@ enum class topology_t {
     TRIANGLES = 0x4
 };
 
-class liMesh {
+enum class cullMode_t {
+    BACK_FACE = GL_BACK,
+    FRONT_FACE = GL_FRONT,
+    BACK_AND_FRONT_FACE = GL_FRONT_AND_BACK
+};
+
+class liMesh : public liAsset {
     friend class liVertex;
 public:
     liMesh(ulong_t vertexCount, ulong_t drawCount);
@@ -18,7 +25,7 @@ public:
 
     void UploadVertices(liVertexList* vertices);
     void UploadIndices(liUIntBuffer* indices);
-    void Draw(topology_t topology = topology_t::TRIANGLES, ulong_t start = 0, long_t count = -1);
+    void Draw(cullMode_t cull, topology_t topology, ulong_t start, long_t count);
 private:
     ghandle_t vao, vbo, ibo;
     ulong_t vertexCount, drawCount;

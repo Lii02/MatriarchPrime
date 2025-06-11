@@ -30,7 +30,7 @@ public:
         glBindBufferBase(GL_UNIFORM_BUFFER, binding, handle);
     }
     
-    ghandle_t Handle() const { return handle; }
+    inline ghandle_t Handle() const { return handle; }
 private:
     ghandle_t handle;
 };
