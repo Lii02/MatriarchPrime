@@ -4,6 +4,7 @@
 #include "UniformBuffer.h"
 
 class liRenderShader;
+class liComputeShader;
 
 class liShaderProgram {
     friend class liRenderShader;
@@ -18,9 +19,11 @@ public:
     
     inline ghandle_t Program() const { return program; }
     inline liRenderShader* RenderShader() { return renderShader; }
+    inline liComputeShader* ComputeShader() { return compute; }
 private:
     ghandle_t program;
     liRenderShader* renderShader;
+    liComputeShader* compute;
 };
 
 #endif

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ShaderProgram.h"
 #include "RenderShader.h"
+#include "ComputeShader.h"
 
 liShaderProgram::liShaderProgram() {
     this->program = glCreateProgram();

@@ -10,6 +10,7 @@ public:
     liScene(const liScene&) = delete;
     ~liScene();
 private:
+    std::list<liActor*> actors;
 };
 
 #endif
