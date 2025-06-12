@@ -6,22 +6,12 @@
 #include <Engine/Input/Mouse.h>
 #include <Engine/Graphics/RenderPass.h>
 #include <Engine/Graphics/PostProcessing.h>
-#include <Engine/Math/Matrices.h>
-#include <Engine/Graphics/Mesh.h>
-#include <Engine/Graphics/RenderShader.h>
-#include <Engine/Graphics/ShaderProgram.h>
-#include <Engine/Tools/FileIO.h>
-#include <Engine/Framework/AssetManager.h>
+#include "MP.h"
 
-struct VertexBuffer {
-    liMat4 projection;
-    liMat4 view;
-    liMat4 model;
-};
-
-struct PixelBuffer {
-    liColor color;
-};
+#ifdef _DEBUG
+#include "imgui/imgui_impl_sdl3.h"
+#include "imgui/imgui_impl_opengl3.h"
+#endif
 
 static struct runtime_t {
     SDL_Window* window;
@@ -31,30 +21,13 @@ static struct runtime_t {
     float elapsed;
     liKeyboard* keyboard;
     liMouse* mouse;
-    
     liRenderPass* renderPass;
     liPostProcessing* post;
     liAssetManager* asset;
-    liMesh* mesh;
-    liRenderShader* renderShader;
-    liShaderProgram* program;
-    liUniformBuffer<VertexBuffer>* vertexBuffer;
-    liUniformBuffer<PixelBuffer>* pixelBuffer;
+
+    uint_t modeIndex;
+    std::vector<liGame*> modes;
 } rt;
-
-liVertexList vertices = {
-    liVertex(liVec3(-0.5f, -0.5f, 0.0f), liVec2(0.0f, 0.0f), liVec3()),
-    liVertex(liVec3(0.5f, -0.5f, 0.0f), liVec2(1.0f, 0.0f), liVec3()),
-    liVertex(liVec3(-0.5f, 0.5f, 0.0f), liVec2(0.0f, 1.0f), liVec3()),
-    liVertex(liVec3(0.5f, 0.5f, 0.0f), liVec2(1.0f, 1.0f), liVec3())
-};
-
-liUIntBuffer indices = {
-    0, 1, 2, 1, 2, 3
-};
-
-VertexBuffer vertexBuffer;
-PixelBuffer pixelBuffer;
 
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
     *appstate = static_cast<void*>(&rt);
@@ -78,29 +51,21 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
     rt.post = new liPostProcessing();
     rt.asset = new liAssetManager();
 
-    rt.mesh = new liMesh(vertices.size(), indices.size());
-    rt.mesh->UploadVertices(&vertices);
-    rt.mesh->UploadIndices(&indices);
-    rt.asset->LoadAsset("TestMesh", rt.mesh);
-    
-    rt.renderShader = new liRenderShader();
-    std::string vertexSource, pixelSource;
-    liFileIO::Read("./Assets/Shaders/standard.vert", vertexSource);
-    liFileIO::Read("./Assets/Shaders/standard.frag", pixelSource);
-    rt.renderShader->CompileVertex(vertexSource);
-    rt.renderShader->CompilePixel(pixelSource);
-    rt.asset->LoadAsset("TestShader", rt.renderShader);
+#ifdef _DEBUG
+    ImGui::CreateContext();
+    ImGui_ImplSDL3_InitForOpenGL(rt.window, rt.gl);
+    ImGui_ImplOpenGL3_Init("#version 300 es");
+#endif
 
-    rt.program = new liShaderProgram();
-    rt.renderShader->Attach(rt.program);
-    rt.program->Link({ { 0, "position" }, { 1, "texCoord" }, { 2, "normal" } });
-
-    rt.vertexBuffer = new liUniformBuffer<VertexBuffer>();
-    vertexBuffer.model = liMat4::Translate(liVec3(0, 0, -1));
-    vertexBuffer.projection = liMat4::Perspective(70.0f, 1.6f, 0.1f, 1000.0f);
-
-    rt.pixelBuffer = new liUniformBuffer<PixelBuffer>();
-    pixelBuffer.color = liColor(0.5f, 1.0f, 0.25f, 1.0f);
+    gameContext_t context = {
+        .keyboard = rt.keyboard,
+        .mouse = rt.mouse,
+        .renderPass = rt.renderPass,
+        .post = rt.post,
+        .assets = rt.asset
+    };
+    rt.modes.push_back(new MPGame(context));
+    rt.modeIndex = 0;
 
     return SDL_APP_CONTINUE;
 }
@@ -109,19 +74,27 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
     rt.stopwatch.Begin();
     double deltaTime = rt.stopwatch.Seconds();
     rt.elapsed += rt.stopwatch.Seconds();
+
+#ifdef _DEBUG
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplSDL3_NewFrame();
+    ImGui::NewFrame();
+#endif
+
     rt.renderPass->Begin(liColor(0.5f, 0.25f, 0.25f, 1.0f));
-    
-    rt.program->Bind();
-    rt.vertexBuffer->Bind(rt.program->Program(), "VertexUniform", 0);
-    rt.pixelBuffer->Bind(rt.program->Program(), "PixelUniform", 1);
-    rt.vertexBuffer->Upload(&vertexBuffer);
-    rt.pixelBuffer->Upload(&pixelBuffer);
-    rt.mesh->Draw(cullMode_t::BACK_FACE, topology_t::TRIANGLES, 0, -1);
+
+    rt.modes[rt.modeIndex]->Render();
+    rt.modes[rt.modeIndex]->Update(deltaTime);
 
     rt.renderPass->End();
-
     glClear(GL_COLOR_BUFFER_BIT);
     rt.post->Process(rt.renderPass);
+
+#ifdef _DEBUG
+    rt.modes[rt.modeIndex]->ImGui();
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+#endif
 
     SDL_GL_SwapWindow(rt.window);
     rt.stopwatch.End();
@@ -129,6 +102,11 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
 }
 
 SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event) {
+    
+#ifdef _DEBUG
+    ImGui_ImplSDL3_ProcessEvent(event);
+#endif
+
     switch (event->type) {
     case SDL_EVENT_QUIT:
         return SDL_APP_SUCCESS;
@@ -150,10 +128,16 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event) {
 }
 
 void SDL_AppQuit(void* appstate, SDL_AppResult result) {
-    delete rt.pixelBuffer;
-    delete rt.vertexBuffer;
-    delete rt.program;
-    
+    for(ulong_t i = 0; i < rt.modes.size(); i++) {
+        delete rt.modes[i];
+    }
+
+#ifdef _DEBUG
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL3_Shutdown();
+    ImGui::DestroyContext();
+#endif
+
     delete rt.asset;
     delete rt.post;
     delete rt.renderPass;

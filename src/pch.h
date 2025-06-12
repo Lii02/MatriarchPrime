@@ -61,4 +61,11 @@ union guid_t {
     };
 };
 
+struct IRunnable {
+    virtual ~IRunnable() { }
+
+    virtual void Render() = 0;
+    virtual void Update(float deltaTime) = 0;
+};
+
 #endif
