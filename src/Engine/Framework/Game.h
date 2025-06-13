@@ -27,6 +27,7 @@ public:
 
     inline liKeyboard* Keyboard() { return keyboard; }
     inline liMouse* Mouse() { return mouse; }
+    inline liRenderPass* Pass() { return renderPass; }
     inline liAssetManager* Assets() { return assets; }
 private:
     liKeyboard* keyboard;

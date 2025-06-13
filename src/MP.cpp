@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "MP.h"
-#include "imgui/imgui.h"
+#include <Engine/Graphics/RenderPass.h>
 
 liVertexList vertices = {
     liVertex(liVec3(-0.5f, -0.5f, 0.0f), liVec2(0.0f, 0.0f), liVec3()),
@@ -33,11 +33,11 @@ MPGame::MPGame(gameContext_t context)
     renderShader->Attach(program);
     program->Link({ { 0, "position" }, { 1, "texCoord" }, { 2, "normal" } });
 
-    vertexUniform = new liUniformBuffer<VertexBuffer>();
+    vertexUniform = new liUniformBuffer(sizeof(VertexBuffer));
     vertexBuffer.model = liMat4::Translate(liVec3(0, 0, -1));
     vertexBuffer.projection = liMat4::Perspective(70.0f, 1.6f, 0.1f, 1000.0f);
 
-    pixelUniform = new liUniformBuffer<PixelBuffer>();
+    pixelUniform = new liUniformBuffer(sizeof(PixelBuffer));
     pixelBuffer.color = liColor(0.5f, 1.0f, 0.25f, 1.0f);
 }
 

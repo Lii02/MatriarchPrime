@@ -33,8 +33,8 @@ private:
     liMesh* mesh;
     liRenderShader* renderShader;
     liShaderProgram* program;
-    liUniformBuffer<VertexBuffer>* vertexUniform;
-    liUniformBuffer<PixelBuffer>* pixelUniform;
+    liUniformBuffer* vertexUniform;
+    liUniformBuffer* pixelUniform;
     VertexBuffer vertexBuffer;
     PixelBuffer pixelBuffer;
 };

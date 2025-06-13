@@ -6,12 +6,9 @@
 #include <Engine/Input/Mouse.h>
 #include <Engine/Graphics/RenderPass.h>
 #include <Engine/Graphics/PostProcessing.h>
-#include "MP.h"
-
-#ifdef _DEBUG
 #include "imgui/imgui_impl_sdl3.h"
 #include "imgui/imgui_impl_opengl3.h"
-#endif
+#include "MP.h"
 
 static struct runtime_t {
     SDL_Window* window;
@@ -51,11 +48,9 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
     rt.post = new liPostProcessing();
     rt.asset = new liAssetManager();
 
-#ifdef _DEBUG
     ImGui::CreateContext();
     ImGui_ImplSDL3_InitForOpenGL(rt.window, rt.gl);
     ImGui_ImplOpenGL3_Init("#version 300 es");
-#endif
 
     gameContext_t context = {
         .keyboard = rt.keyboard,
@@ -75,11 +70,9 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
     double deltaTime = rt.stopwatch.Seconds();
     rt.elapsed += rt.stopwatch.Seconds();
 
-#ifdef _DEBUG
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
-#endif
 
     rt.renderPass->Begin(liColor(0.5f, 0.25f, 0.25f, 1.0f));
 
@@ -90,11 +83,9 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
     glClear(GL_COLOR_BUFFER_BIT);
     rt.post->Process(rt.renderPass);
 
-#ifdef _DEBUG
     rt.modes[rt.modeIndex]->ImGui();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-#endif
 
     SDL_GL_SwapWindow(rt.window);
     rt.stopwatch.End();
@@ -102,11 +93,7 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
 }
 
 SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event) {
-    
-#ifdef _DEBUG
     ImGui_ImplSDL3_ProcessEvent(event);
-#endif
-
     switch (event->type) {
     case SDL_EVENT_QUIT:
         return SDL_APP_SUCCESS;
@@ -132,11 +119,9 @@ void SDL_AppQuit(void* appstate, SDL_AppResult result) {
         delete rt.modes[i];
     }
 
-#ifdef _DEBUG
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
-#endif
 
     delete rt.asset;
     delete rt.post;

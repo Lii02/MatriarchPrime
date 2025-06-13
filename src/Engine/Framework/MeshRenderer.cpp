@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "MeshRenderer.h"
 
-liMeshRenderer::liMeshRenderer(liMesh* mesh, cullMode_t cull, topology_t topology, ulong_t start, ulong_t count) 
+liMeshRenderer::liMeshRenderer(liMesh* mesh, liMaterial* material, cullMode_t cull, topology_t topology, ulong_t start, ulong_t count) 
     : liActorComponent(actorComponentType_t::MESHRENDERER) {
         this->mesh = mesh;
+        this->material = material;
         this->topology = topology;
         this->cull = cull;
         this->start = start;
@@ -14,7 +15,8 @@ liMeshRenderer::~liMeshRenderer() {
 }
 
 void liMeshRenderer::Render() {
-    if(mesh != nullptr) { 
+    if(mesh != nullptr && material != nullptr) { 
+        material->Render();
         mesh->Draw(cull, topology, start, count);
     }
 }

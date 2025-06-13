@@ -18,6 +18,7 @@ public:
 
     std::string name;
     liTransform transform;
+    int layer;
 private:
     std::array<liActorComponent*, actorComponentType_t::COUNT> components;
 };

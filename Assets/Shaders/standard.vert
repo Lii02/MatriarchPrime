@@ -7,6 +7,7 @@ layout (location = 2) in vec3 normal;
 
 out VS_OUT {
     vec2 texCoords;
+    vec3 normals;
 } vsOut;
 
 layout (std140, binding = 0) uniform VertexUniform {
@@ -18,4 +19,5 @@ layout (std140, binding = 0) uniform VertexUniform {
 void main() {
     gl_Position = projection * view * model * vec4(position, 1);
     vsOut.texCoords = texCoord;
+    vsOut.normals = normal;
 }

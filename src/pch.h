@@ -68,4 +68,9 @@ struct IRunnable {
     virtual void Update(float deltaTime) = 0;
 };
 
+struct rawBuffer_t {
+    void* buffer;
+    ulong_t size;
+};
+
 #endif

@@ -4,7 +4,6 @@
 
 class liRenderShader;
 class liShaderProgram;
-template <typename T>
 class liUniformBuffer;
 class liRenderPass;
 
@@ -22,7 +21,7 @@ private:
     liRenderShader* renderShader;
     liShaderProgram* program;
     liRenderPass* source;
-    liUniformBuffer<PixelUniform>* uniform;
+    liUniformBuffer* uniform;
     ghandle_t vao, vbo;
 };
 

@@ -36,7 +36,7 @@ liPostProcessing::liPostProcessing() {
     
     this->renderShader->Attach(program);
     this->program->Link({ { 0, "position" }, { 1, "texCoord" } });
-    this->uniform = new liUniformBuffer<PixelUniform>();
+    this->uniform = new liUniformBuffer(sizeof(PixelUniform));
 }
 
 liPostProcessing::~liPostProcessing() {
