@@ -46,9 +46,13 @@ public:
     void SetProgram(liShaderProgram* program);
     void Render();
 private:
+    void _ConstructBuffers();
+    void _UpdateBuffers();
+    ulong_t _GetValueSize(materialValueType_t type);
+
     liShaderProgram* program;
-    liUniformBuffer* pixelUniform, *vertexUniform;
-    rawBuffer_t pixelBuffer, vertexBuffer;
+    liUniformBuffer* vertexUniform, *pixelUniform;
+    rawBuffer_t vertexBuffer, pixelBuffer;
     std::map<std::string, materialValue_t> values;
 };
 
