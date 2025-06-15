@@ -1,59 +1,43 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 #pragma once
-#include "Engine/Framework/Asset.h"
+#include "Asset.h"
+#include "IMaterial.h"
 #include "Engine/Math/Vectors.h"
 #include "Engine/Math/Matrices.h"
-#include "Engine/Graphics/UniformBuffer.h"
 
 class liShaderProgram;
 class liUniformBuffer;
 
-enum class materialValueType_t {
-    INT,
-    FLOAT,
-    MAT4,
-    VEC2,
-    VEC3,
-    VEC4
+enum class materialType_t : uint_t {
+    LIT = 0,
+    UNLIT = 1,
+    CUSTOM = 2
 };
 
-enum class materialValueLocation_t {
-    VERTEX,
-    PIXEL
+struct pixelMaterialData_t {
+    materialType_t type;
 };
 
-struct materialValue_t {
-    materialValueType_t type;
-    materialValueLocation_t location;
-
-    union {
-        int intValue;
-        float floatValue;
-        liMat4 mat4;
-        liVec2 vec2;
-        liVec3 vec3;
-        liVec4 vec4;
-    };
+struct vertexMaterialData_t {
+    liMat4 projection;
+    liMat4 view;
+    liMat4 model;
 };
 
-class liMaterial : public liAsset {
+class liMaterial : public IMaterial, public liAsset {
 public:
-    liMaterial();
+    liMaterial(liShaderProgram* program = nullptr);
     liMaterial(const liMaterial&) = delete;
     ~liMaterial();
     
-    void SetProgram(liShaderProgram* program);
-    void Render();
+    virtual void Bind() override;
+    virtual void Update() override;
+    void SetVertexData(vertexMaterialData_t data);
+    void SetPixelData(pixelMaterialData_t data);
 private:
-    void _ConstructBuffers();
-    void _UpdateBuffers();
-    ulong_t _GetValueSize(materialValueType_t type);
-
-    liShaderProgram* program;
-    liUniformBuffer* vertexUniform, *pixelUniform;
-    rawBuffer_t vertexBuffer, pixelBuffer;
-    std::map<std::string, materialValue_t> values;
+    vertexMaterialData_t vertexData;
+    pixelMaterialData_t pixelData;
 };
 
 #endif

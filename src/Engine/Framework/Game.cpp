@@ -9,6 +9,9 @@ liGame::liGame(gameContext_t context) {
     this->post = context.post;
 }
 
+void liGame::Setup() {
+}
+
 void liGame::Render() {
 }
 

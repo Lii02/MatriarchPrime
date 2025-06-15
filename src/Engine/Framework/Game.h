@@ -21,8 +21,9 @@ public:
     liGame(gameContext_t context);
     virtual ~liGame() { }
 
-    virtual void Render();
-    virtual void Update(float deltaTime);
+    virtual void Setup() override;
+    virtual void Render() override;
+    virtual void Update(float deltaTime) override;
     virtual void ImGui() = 0;
 
     inline liKeyboard* Keyboard() { return keyboard; }

@@ -16,7 +16,7 @@ liMeshRenderer::~liMeshRenderer() {
 
 void liMeshRenderer::Render() {
     if(mesh != nullptr && material != nullptr) { 
-        material->Render();
+        material->Bind();
         mesh->Draw(cull, topology, start, count);
     }
 }

@@ -2,11 +2,12 @@
 #define SHADERPROGRAM_H
 #pragma once
 #include "UniformBuffer.h"
+#include "Engine/Framework/Asset.h"
 
 class liRenderShader;
 class liComputeShader;
 
-class liShaderProgram {
+class liShaderProgram : public liAsset {
     friend class liRenderShader;
 public:
     liShaderProgram();

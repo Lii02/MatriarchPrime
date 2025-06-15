@@ -13,10 +13,13 @@ public:
     liAsset* LoadAsset(std::string name, liAsset* asset);
     void UnloadAsset(std::string name);
     void UnloadAssets();
+    liAsset* GetAssetByIndex(ulong_t index);
     template <typename AssetType>
     AssetType* FindAssetByName(std::string name);
     template <typename AssetType>
     AssetType* FindAssetByGUID(guid_t guid);
+
+    inline ulong_t AssetCount() const { return assets.size(); }
 private:
     std::map<std::string, liAsset*> assets;
 };

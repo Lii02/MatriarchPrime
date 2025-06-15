@@ -39,3 +39,9 @@ void liAssetManager::UnloadAssets() {
     }
     assets.clear();
 }
+
+liAsset* liAssetManager::GetAssetByIndex(ulong_t index) {
+    std::map<std::string, liAsset*>::iterator it = assets.begin();
+    std::advance(it, index);
+    return it->second;
+}

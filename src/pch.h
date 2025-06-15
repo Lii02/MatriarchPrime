@@ -36,6 +36,7 @@ typedef unsigned int ghandle_t;
 #include <bitset>
 #include <map>
 #include <array>
+#include <variant>
 #include <assert.h>
 #include <string.h>
 #include <math.h>
@@ -64,6 +65,7 @@ union guid_t {
 struct IRunnable {
     virtual ~IRunnable() { }
 
+    virtual void Setup() = 0;
     virtual void Render() = 0;
     virtual void Update(float deltaTime) = 0;
 };

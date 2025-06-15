@@ -1,11 +1,15 @@
 #define SDL_MAIN_USE_CALLBACKS
 #include <SDL3/SDL_main.h>
 #include "pch.h"
+#include <Engine/Tools/FileIO.h>
 #include <Engine/Framework/Stopwatch.h>
 #include <Engine/Input/Keyboard.h>
 #include <Engine/Input/Mouse.h>
 #include <Engine/Graphics/RenderPass.h>
 #include <Engine/Graphics/PostProcessing.h>
+#include <Engine/Framework/AssetManager.h>
+#include <Engine/Graphics/RenderShader.h>
+#include <Engine/Graphics/ShaderProgram.h>
 #include "imgui/imgui_impl_sdl3.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "MP.h"
@@ -52,6 +56,22 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv) {
     ImGui_ImplSDL3_InitForOpenGL(rt.window, rt.gl);
     ImGui_ImplOpenGL3_Init("#version 300 es");
 
+    // Default 3d assets
+    {
+        liRenderShader* shader3d = new liRenderShader();
+        std::string vertexSource, pixelSource;
+        liFileIO::Read("./Assets/Shaders/standard.vert", vertexSource);
+        liFileIO::Read("./Assets/Shaders/standard.frag", pixelSource);
+        shader3d->CompileVertex(vertexSource);
+        shader3d->CompilePixel(pixelSource);
+        rt.asset->LoadAsset("Shader3D", shader3d);
+        
+        liShaderProgram* program3d = new liShaderProgram();
+        shader3d->Attach(program3d);
+        program3d->Link({ { 0, "position" }, { 1, "texCoord" }, { 2, "normal" } });
+        rt.asset->LoadAsset("ShaderProgram3D", program3d);
+    }
+
     gameContext_t context = {
         .keyboard = rt.keyboard,
         .mouse = rt.mouse,
@@ -88,6 +108,8 @@ SDL_AppResult SDL_AppIterate(void* appstate) {
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     SDL_GL_SwapWindow(rt.window);
+    rt.keyboard->Update();
+    rt.mouse->Update();
     rt.stopwatch.End();
     return SDL_APP_CONTINUE;
 }
@@ -106,7 +128,6 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event) {
         rt.mouse->buttons[event->button.button] = (event->button.type == SDL_EVENT_MOUSE_BUTTON_DOWN);
         return SDL_APP_CONTINUE;
     case SDL_EVENT_KEY_DOWN:
-        return SDL_APP_CONTINUE;
     case SDL_EVENT_KEY_UP:
         rt.keyboard->keys[event->key.scancode] = (event->key.type == SDL_EVENT_KEY_DOWN);
     default:
