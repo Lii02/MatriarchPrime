@@ -17,6 +17,7 @@ enum class materialType_t : uint_t {
 
 struct pixelMaterialData_t {
     materialType_t type;
+    liColor color;
 };
 
 struct vertexMaterialData_t {

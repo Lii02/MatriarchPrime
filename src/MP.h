@@ -2,6 +2,9 @@
 #define MP_H
 #pragma once
 #include <Engine/Framework/Game.h>
+#include <Engine/Framework/Material.h>
+#include <Engine/Framework/Actor.h>
+#include <Engine/Framework/MeshRenderer.h>
 
 class MPGame : public liGame {
 public:
@@ -15,6 +18,9 @@ public:
     virtual void ImGui() override;
 private:
     bool debugMenus;
+    liMesh* mesh;
+    liMaterial* material;
+    liActor* actor;
 };
 
 #endif

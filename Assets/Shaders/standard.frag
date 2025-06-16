@@ -9,6 +9,7 @@ in VS_OUT {
 } vsIn;
 
 layout (std140, binding = 1) uniform PixelUniform {
+    int type;
     vec4 color;
 };
 

@@ -26,7 +26,7 @@ private:
 
 template <typename AssetType>
 AssetType* liAssetManager::FindAssetByName(std::string name) {
-    return nullptr;
+    return reinterpret_cast<AssetType*>(assets[name]);
 }
 
 template <typename AssetType>
