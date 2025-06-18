@@ -34,7 +34,7 @@ if(WIN32)
 endif()
 
 target_precompile_headers(MatriarchPrime PUBLIC src/pch.h)
-target_link_libraries(MatriarchPrime LiDependencies SDL3 OpenAL32 opengl32)
+target_link_libraries(MatriarchPrime LiDependencies SDL3 OpenAL32 opengl32 tinyxml2)
 target_include_directories(MatriarchPrime PUBLIC ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/LiDependencies/Include)
 target_link_directories(MatriarchPrime PUBLIC ${PROJECT_SOURCE_DIR}/LiDependencies/Lib)
 set_property(TARGET MatriarchPrime PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")

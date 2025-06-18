@@ -13,7 +13,7 @@ public:
 
     void Render();
     void Update(float deltaTime);
-    void AddComponent(liActorComponent* compoment);
+    void AddComponent(liActorComponent* component);
     void RemoveComponent(actorComponentType_t type);
 
     std::string name;

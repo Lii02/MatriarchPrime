@@ -33,12 +33,13 @@ void liActor::Update(float deltaTime) {
     }
 }
 
-void liActor::AddComponent(liActorComponent* compoment) {
-    liActorComponent* dest = components[compoment->type];
+void liActor::AddComponent(liActorComponent* component) {
+    liActorComponent* dest = components[component->type];
     if(dest == nullptr) {
         delete dest;
     }
-    components[compoment->type] = compoment;
+    component->owner = this;
+    components[component->type] = component;
 }
 
 void liActor::RemoveComponent(actorComponentType_t type) {
