@@ -34,7 +34,7 @@ MPGame::MPGame(gameContext_t context)
     vertData.model = liMat4::Translate(liVec3(0, 0, -1));
     material->SetVertexData(vertData);
     pixelMaterialData_t pixelData = { };
-    pixelData.color = liColor(1, 1, 1, 1);
+    pixelData.color = liColor(1, 0.5f, 1, 1);
     material->SetPixelData(pixelData);
 }
 

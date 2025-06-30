@@ -19,5 +19,5 @@ layout (std140, binding = 2) uniform Lighting {
 };
 
 void main() {
-    outColor = vec4(color, 1);
+    outColor = color;
 }
